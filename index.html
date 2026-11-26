@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer - Quản lý thời gian học tập</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+        }
+
+        .timer-circle {
+            transform: rotate(-90deg);
+        }
+
+        .timer-progress {
+            transition: stroke-dashoffset 0.5s linear;
+        }
+
+        button {
+            transition: all 0.2s ease;
+        }
+
+        .mode-active {
+            background: #fff1f2;
+            color: #e11d48;
+            border-color: #fecdd3;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-slate-800">
+
+    <header class="bg-white border-b border-slate-200">
+        <div class="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3">
+                <div
+                    class="w-10 h-10 bg-rose-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
+                    P
+                </div>
+                <span class="text-xl font-extrabold text-slate-900">Pomodoro</span>
+            </a>
+
+            <span class="text-sm text-slate-500 hidden sm:block">
+                Học tập thông minh hơn mỗi ngày
+            </span>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-5 py-12">
+
+        <div class="text-center mb-10">
+            <span class="inline-block px-4 py-2 bg-rose-50 text-rose-600 rounded-full text-sm font-semibold mb-5">
+                Focus & Productivity
+            </span>
+
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">
+                Tập trung học tập hiệu quả
+            </h1>
+
+            <p class="text-slate-500 max-w-xl mx-auto leading-relaxed">
+                Quản lý thời gian học tập bằng phương pháp Pomodoro.
+                Tập trung từng khoảng thời gian ngắn và nghỉ ngơi hợp lý.
+            </p>
+        </div>
+
+        <section class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-10 max-w-2xl mx-auto">
+
+            <div class="flex flex-wrap justify-center gap-2 mb-9">
+                <button data-mode="focus"
+                    class="mode-btn mode-active border rounded-xl px-4 py-3 text-sm font-semibold">
+                    Tập trung
+                </button>
+
+                <button data-mode="short"
+                    class="mode-btn border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-500 hover:bg-slate-50">
+                    Nghỉ ngắn
+                </button>
+
+                <button data-mode="long"
+                    class="mode-btn border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-500 hover:bg-slate-50">
+                    Nghỉ dài
+                </button>
+            </div>
+
+            <div class="relative w-64 h-64 mx-auto mb-8">
+
+                <svg class="w-full h-full timer-circle" viewBox="0 0 200 200">
+                    <circle cx="100" cy="100" r="88" fill="none" stroke="#f1f5f9" stroke-width="9" />
+
+                    <circle id="progressCircle" class="timer-progress" cx="100" cy="100" r="88" fill="none"
+                        stroke="#e11d48" stroke-width="9" stroke-linecap="round" stroke-dasharray="552.92"
+                        stroke-dashoffset="0" />
+                </svg>
+
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <p id="modeLabel" class="text-sm font-semibold text-rose-600 mb-2">
+                        THỜI GIAN TẬP TRUNG
+                    </p>
+
+                    <h2 id="timerDisplay" class="text-6xl font-extrabold text-slate-900 tabular-nums">
+                        25:00
+                    </h2>
+
+                    <p id="timerStatus" class="text-sm text-slate-400 mt-3">
+                        Sẵn sàng bắt đầu
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-4 mb-9">
+                <button id="startBtn"
+                    class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-10 py-4 rounded-xl shadow-lg shadow-rose-100">
+                    Bắt đầu
+                </button>
+
+                <button id="resetBtn"
+                    class="border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold px-6 py-4 rounded-xl">
+                    Đặt lại
+                </button>
+            </div>
+
+            <div class="border-t border-slate-100 pt-7">
+                <h3 class="font-bold text-center mb-5">
+                    Thống kê hôm nay
+                </h3>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-rose-50 rounded-2xl p-5 text-center">
+                        <p id="sessionCount" class="text-3xl font-extrabold text-rose-600">
+                            0
+                        </p>
+                        <p class="text-sm text-slate-500 mt-2">
+                            Phiên tập trung
+                        </p>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-2xl p-5 text-center">
+                        <p id="focusTime" class="text-3xl font-extrabold text-slate-800">
+                            0 phút
+                        </p>
+                        <p class="text-sm text-slate-500 mt-2">
+                            Thời gian học
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="max-w-2xl mx-auto mt-7 bg-white border border-slate-200 rounded-2xl p-6">
+            <h3 class="font-bold text-lg mb-4">
+                Cách sử dụng Pomodoro
+            </h3>
+
+            <div class="space-y-4 text-sm text-slate-600">
+                <div class="flex gap-3">
+                    <span class="text-rose-600 font-bold">01.</span>
+                    <p>Chọn chế độ tập trung và bắt đầu học trong 25 phút.</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <span class="text-rose-600 font-bold">02.</span>
+                    <p>Sau khi hoàn thành, nghỉ ngắn trong 5 phút.</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <span class="text-rose-600 font-bold">03.</span>
+                    <p>Sau 4 phiên tập trung, dành 15 phút để nghỉ dài.</p>
+                </div>
+
+                <div class="flex gap-3">
+                    <span class="text-rose-600 font-bold">04.</span>
+                    <p>Tiếp tục chu kỳ để duy trì sự tập trung.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="text-center mt-8 text-sm text-slate-400">
+            Hãy tập trung vào từng mục tiêu nhỏ mỗi ngày!
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12">
+        <div class="max-w-6xl mx-auto px-5 py-6 text-center text-sm text-slate-500">
+            © 2026 Pomodoro Timer. Công cụ quản lý thời gian học tập.
+        </div>
+    </footer>
+
+    <script>
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerStatus = document.getElementById('timerStatus');
+        const modeLabel = document.getElementById('modeLabel');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const progressCircle = document.getElementById('progressCircle');
+        const sessionCount = document.getElementById('sessionCount');
+        const focusTime = document.getElementById('focusTime');
+
+        const modes = {
+            focus: {
+                duration: 25 * 60,
+                label: 'THỜI GIAN TẬP TRUNG'
+            },
+            short: {
+                duration: 5 * 60,
+                label: 'NGHỈ NGẮN'
+            },
+            long: {
+                duration: 15 * 60,
+                label: 'NGHỈ DÀI'
+            }
+        };
+
+        const circumference = 2 * Math.PI * 88;
+
+        let currentMode = 'focus';
+        let remainingTime = modes.focus.duration;
+        let isRunning = false;
+        let timerInterval = null;
+        let endTime = null;
+        let completedSessions = 0;
+        let totalFocusTime = 0;
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+
+            return String(minutes).padStart(2, '0') +
+                ':' + String(secs).padStart(2, '0');
+        }
+
+        function updateDisplay() {
+            timerDisplay.textContent = formatTime(remainingTime);
+
+            const total = modes[currentMode].duration;
+            const progress = remainingTime / total;
+
+            progressCircle.style.strokeDashoffset =
+                circumference * (1 - progress);
+
+            document.title = formatTime(remainingTime) + ' - Pomodoro';
+        }
+
+        function updateMode(mode) {
+            if (isRunning) {
+                stopTimer();
+            }
+
+            currentMode = mode;
+            remainingTime = modes[mode].duration;
+
+            modeLabel.textContent = modes[mode].label;
+            timerStatus.textContent = 'Sẵn sàng bắt đầu';
+
+            document.querySelectorAll('.mode-btn').forEach(button => {
+                button.classList.remove('mode-active');
+                button.classList.add('border-slate-200', 'text-slate-500');
+            });
+
+            const activeButton = document.querySelector(
+                `[data-mode="${mode}"]`
+            );
+
+            activeButton.classList.add('mode-active');
+            activeButton.classList.remove('border-slate-200', 'text-slate-500');
+
+            startBtn.textContent = 'Bắt đầu';
+
+            updateDisplay();
+        }
+
+        function startTimer() {
+            if (isRunning) {
+                stopTimer();
+                return;
+            }
+
+            isRunning = true;
+            endTime = Date.now() + remainingTime * 1000;
+
+            startBtn.textContent = 'Tạm dừng';
+            timerStatus.textContent = 'Đang chạy...';
+
+            timerInterval = setInterval(() => {
+                remainingTime = Math.max(
+                    0,
+                    Math.ceil((endTime - Date.now()) / 1000)
+                );
+
+                updateDisplay();
+
+                if (remainingTime <= 0) {
+                    completeTimer();
+                }
+            }, 200);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            isRunning = false;
+            endTime = null;
+
+            startBtn.textContent = 'Tiếp tục';
+            timerStatus.textContent = 'Đã tạm dừng';
+        }
+
+        function resetTimer() {
+            stopTimer();
+
+            remainingTime = modes[currentMode].duration;
+
+            startBtn.textContent = 'Bắt đầu';
+            timerStatus.textContent = 'Sẵn sàng bắt đầu';
+
+            updateDisplay();
+        }
+
+        function playSound() {
+            try {
+                const AudioContext =
+                    window.AudioContext || window.webkitAudioContext;
+
+                const audio = new AudioContext();
+
+                [0, 0.3, 0.6].forEach(delay => {
+                    const oscillator = audio.createOscillator();
+                    const gain = audio.createGain();
+
+                    oscillator.connect(gain);
+                    gain.connect(audio.destination);
+
+                    oscillator.frequency.value = 800;
+                    gain.gain.value = 0.15;
+
+                    oscillator.start(audio.currentTime + delay);
+                    oscillator.stop(audio.currentTime + delay + 0.2);
+                });
+            } catch (error) {
+                console.log('Không thể phát âm thanh.');
+            }
+        }
+
+        function completeTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+
+            isRunning = false;
+            endTime = null;
+            remainingTime = 0;
+
+            updateDisplay();
+            playSound();
+
+            if (currentMode === 'focus') {
+                completedSessions++;
+                totalFocusTime += 25;
+
+                sessionCount.textContent = completedSessions;
+                focusTime.textContent = totalFocusTime + ' phút';
+
+                if (completedSessions % 4 === 0) {
+                    updateMode('long');
+                } else {
+                    updateMode('short');
+                }
+
+                timerStatus.textContent = 'Hoàn thành phiên học!';
+                startBtn.textContent = 'Bắt đầu nghỉ';
+
+            } else {
+                updateMode('focus');
+
+                timerStatus.textContent = 'Đã hết giờ nghỉ!';
+                startBtn.textContent = 'Bắt đầu học';
+            }
+        }
+
+        document.querySelectorAll('.mode-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                updateMode(button.dataset.mode);
+            });
+        });
+
+        startBtn.addEventListener('click', startTimer);
+
+        resetBtn.addEventListener('click', resetTimer);
+
+        updateDisplay();
+    </script>
+
+</body>
+
+</html>
